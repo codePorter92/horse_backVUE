@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # horse_backvue
 
 ## Project setup
@@ -22,3 +23,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# horse_backVUE
+horse_background
+>>>>>>> 12f61d299576df4e89b8bc83c40b4daa017f07cc
