@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    这是根标签
     <router-view></router-view>
   </div>
 </template>
