@@ -18,7 +18,7 @@
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="1-1">
+            <el-menu-item index='1-1'>
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </el-menu-item>
@@ -28,7 +28,7 @@
               <i class="el-icon-location"></i>
               <span>文章管理</span>
             </template>
-            <el-menu-item index="2-1">
+            <el-menu-item index="postlist">
               <i class="el-icon-location"></i>
               <span>文章列表</span>
             </el-menu-item>

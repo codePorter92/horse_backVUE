@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 // 引入路由文件
 import login from '@/views/login.vue'
 import index from '@/views/index.vue'
+// 引入子组件的路由文件
+import userindex from '@/views/userindex.vue'
+import postlist from '@/views/postlist.vue'
 
 Vue.use(VueRouter)
 
@@ -15,17 +18,30 @@ let router = new VueRouter({
     },
     {
       name: 'index',
-      path: '/',
-      component: index
+      path: '/index',
+      component: index,
+      redirect: { name: 'userindex' },
+      children: [
+        {
+          name: 'userindex',
+          path: 'userindex',
+          component: userindex
+        },
+        {
+          name: 'postlist',
+          path: 'postlist',
+          component: postlist
+        }
+      ]
     }
   ]
 })
 
-// 设置导航首位
+// 设置导航守卫
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     next()
-  } else if (to.path === '/') {
+  } else {
     let token = localStorage.getItem('horse_back_token')
     if (token) {
       next()

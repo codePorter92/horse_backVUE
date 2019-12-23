@@ -52,7 +52,7 @@ export default {
           if (res.data.message === '登录成功') {
             // 储存token值
             localStorage.setItem('horse_back_token', res.data.data.token)
-            this.$router.push({ path: '/' })
+            this.$router.push({ path: '/index' })
           } else if (res.data.message === '用户不存在') {
             this.$message.warning(res.data.message)
           }
