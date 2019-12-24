@@ -4,7 +4,7 @@
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: 'userindex' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>文章管理</el-breadcrumb-item>
-      <el-breadcrumb-item>文章发布</el-breadcrumb-item>
+      <el-breadcrumb-item>文章列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 添加列表 -->
     <el-table :data="postlist" style="width: 100%;margin-top:20px" border>

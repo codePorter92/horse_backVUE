@@ -6,6 +6,7 @@ import index from '@/views/index.vue'
 // 引入子组件的路由文件
 import userindex from '@/views/userindex.vue'
 import postlist from '@/views/postlist.vue'
+import listissue from '@/views/listissue.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ let router = new VueRouter({
           name: 'postlist',
           path: 'postlist',
           component: postlist
+        },
+        {
+          name: 'listissue',
+          path: 'listissue',
+          component: listissue
         }
       ]
     }
