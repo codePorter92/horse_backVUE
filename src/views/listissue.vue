@@ -31,6 +31,7 @@
           :file-list="fileList"
           :on-success='successupload'
           :before-upload='beforeupload'
+          :headers='gettoken()'
         >
           <el-button size="small" type="primary">点击上传</el-button>
           <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
@@ -121,6 +122,8 @@ export default {
           name: 'file',
           headers: this.gettoken(),
           uploadSuccess (res, insert) {
+            console.log(res)
+            console.log(2222)
             insert('http://localhost:3000' + res.data.data.url)
           }
         }
@@ -142,16 +145,26 @@ export default {
     },
     // 上传视频的函数
     successupload (response, file, fileList) {
-      console.log(response)
-      console.log(file)
-      console.log(fileList)
+    //   console.log(response)
+    //   console.log(file)
+    //   console.log(fileList)
+      if (response.message === '文件上传成功') {
+        this.listissue.content = response.data.url
+      }
     },
     beforeupload (file) {
       console.log(file)
+      //   对视频做一个判断，不是视频的不能上传，每个视频文件的type属性都是以video开头
+      if (file.type.indexOf('video') === -1) {
+        this.$message.warning('请上传视频文件')
+      }
+      //   直接中断上传情况
+      return false
     },
     onsubmit () {
       // 富文本域的取值
       if (this.listissue.type === 1) {
+        console.log(this.$refs.vueEditor.editor)
         let content = this.$refs.vueEditor.editor.root.innerHTML
         this.listissue.content = content
       }
