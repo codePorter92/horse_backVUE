@@ -65,7 +65,11 @@
 </template>
 
 <script>
-export default {}
+export default {
+  mounted () {
+    // index.vue中代码修改示例
+  }
+}
 </script>
 
 <style lang='less' scoped>

@@ -38,22 +38,28 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="栏目：">
-        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
+        <el-checkbox :indeterminate="isIndeterminate"
+        v-model="checkAll"
+        @change="handleCheckAllChange">全选</el-checkbox>
         <div style="margin: 15px 0;"></div>
-        <el-checkbox-group v-model="checkedCities">
-          <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+        <el-checkbox-group v-model="checkedCities"
+        @change="handleCheckedCitiesChange">
+          <el-checkbox v-for="city in cities" :label="city.id" :key="city.id">{{city.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="封面：">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="http://127.0.0.1:3000/upload"
           list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
+          :headers='gettoken()'
+          :before-upload='ispicture'
+          :on-success='handlePictureCardSuccesss'
           :on-remove="handleRemove"
+          :limit='3'
         >
           <i class="el-icon-plus"></i>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible" size="tiny">
+        <el-dialog  size="tiny">
           <img width="100%" :src="dialogImageUrl" alt />
         </el-dialog>
       </el-form-item>
@@ -66,11 +72,12 @@
 </template>
 
 <script>
+// 引入接口文档
+import { getlistitem, postlist } from '@/api/indexpage.js'
+// import { getlistitem } from '@/api/indexpage.js'
 // 引入富文本域
 import VueEditor from 'vue-word-editor'
 import 'quill/dist/quill.snow.css'
-// 全选项列表
-const cityOptions = ['上海', '北京', '广州', '深圳']
 export default {
   data () {
     return {
@@ -96,12 +103,11 @@ export default {
       fileList: [],
       //   全选的变量
       checkAll: false,
-      checkedCities: ['上海', '北京'],
-      cities: cityOptions,
-      isIndeterminate: true,
+      checkedCities: [],
+      cities: [],
+      isIndeterminate: false,
       // 照片框变量
       dialogImageUrl: '',
-      dialogVisible: false,
       config: {
         // 富文本域中    上传图片的配置
         uploadImage: {
@@ -136,12 +142,32 @@ export default {
   },
   methods: {
     // 照片墙方法
+    ispicture (file) {
+      console.log(file)
+      if (file.type.indexOf('image') === -1) {
+        this.$message.warning('文件格式不支持，请上传图片格式')
+        return false
+      }
+    },
     handleRemove (file, fileList) {
       console.log(file, fileList)
+      // 把文档中去除的页面在参数的数组中去除
+      this.listissue.cover = this.listissue.cover.filter((item, index) => {
+        return item.id !== file.response.data.id
+      })
     },
-    handlePictureCardPreview (file) {
+    handlePictureCardSuccesss (response, file, fileList) {
+      // 这两句是插件的默认语句
       this.dialogImageUrl = file.url
-      this.dialogVisible = true
+      // 遍历fileList数组，并取出相应的值，放入数组中
+      //   this.listissue.cover
+      if (response.message === '文件上传成功') {
+        this.listissue.cover = fileList.map(item => {
+          return {
+            id: item.response.data.id
+          }
+        })
+      }
     },
     // 上传视频的函数
     successupload (response, file, fileList) {
@@ -161,14 +187,25 @@ export default {
       //   直接中断上传情况
       return false
     },
-    onsubmit () {
+    async onsubmit () {
       // 富文本域的取值
       if (this.listissue.type === 1) {
         console.log(this.$refs.vueEditor.editor)
         let content = this.$refs.vueEditor.editor.root.innerHTML
         this.listissue.content = content
       }
+      // 赋值给参数中的categeries中
+      this.listissue.categeries = this.checkedCities.map(item => {
+        return {
+          id: item
+        }
+      })
       console.log(this.listissue)
+      let res = await postlist(this.listissue)
+      console.log(res)
+      if (res.data.message === '文章发布成功') {
+        this.$router.push({ path: '/index/postlist' })
+      }
     },
     // 获取token值的封装
     gettoken () {
@@ -176,7 +213,32 @@ export default {
       return {
         Authorization: token
       }
+    },
+    // 全选框
+    handleCheckAllChange (val) {
+    // val是bolean
+      console.log(val)
+      this.checkedCities = val ? this.cities.map(item => {
+        return item.id
+      }) : []
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange (value) {
+    // value是数组
+      console.log(value)
+      let checkedCount = value.length
+      //   console.log(checkedCount)
+      this.checkAll = checkedCount === this.cities.length
+      //   console.log(this.cities.length)
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length
     }
+  },
+  async  mounted () {
+    // 组件加载完，请求数据，遍历数组
+    let res = await getlistitem()
+    // console.log(res)
+    this.cities = res.data.data.splice(2)
+    // console.log(this.cities)
   }
 }
 </script>

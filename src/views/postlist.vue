@@ -59,21 +59,16 @@ import { getpostlist } from '@/api/indexpage.js'
 import { formatdate } from '@/utils/filters.js'
 export default {
   mounted () {
-    // let res = await getpostlist({ pageIndex: this.currentPage, pageSize: this.pagesize })
-    // console.log(res)
-    // if (res.status === 200) {
-    //   this.postlist = res.data.data
-    // }
     this.init()
   },
   data () {
     return {
       postlist: [],
-      currentPage: 4,
-      pagesize: 2,
+      currentPage: 1,
+      pagesize: 32,
       params: {},
       pagesizelist: [2, 4, 6, 8, 10, 12],
-      total: 1
+      total: 0
     }
   },
   methods: {
@@ -87,6 +82,14 @@ export default {
         this.postlist = res.data.data
         this.total = res.data.total
       }
+      // let res = await getpostlist({
+      //   pagesize: this.pagesize,
+      //   currentPage: this.pageIndex
+      // })
+      // if (res.status === 200) {
+      //   this.postlist = res.data.data
+      //   this.total = res.data.total
+      // }
     },
     // 控制编译的函数
     handleEdit (index, row) {

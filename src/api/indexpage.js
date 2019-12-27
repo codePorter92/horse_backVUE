@@ -6,3 +6,17 @@ export const getpostlist = (params) => {
     params
   })
 }
+
+export const getlistitem = () => {
+  return axios({
+    url: '/category'
+  })
+}
+
+export const postlist = (data) => {
+  return axios({
+    method: 'post',
+    url: '/post',
+    data
+  })
+}
